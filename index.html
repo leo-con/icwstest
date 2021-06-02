@@ -1,0 +1,169 @@
+﻿<!--
+    Desarrollado por: Sixbell 
+    Autor: Carlos Alexis Brito Garduño
+    Versión 1.0.0
+-->
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>
+            Dialer ICWS App 1.0.0
+        </title>
+        <link rel="stylesheet" href="css/custom.css"/>
+        <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css"/>
+        <link rel="shortcut icon" href="">
+    </head>
+
+    <body>
+       <!-- CONTENEDOR PADRE -->
+       <div style="width: 99%; height:6.5%;">
+            <!-- FORMULARIO PARA INICAR SESION -->
+            <div data-page="login-page">
+                <nav class=" bg-dark" style="text-align: center;">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td>
+                                <input value="icagente" type="text" id="login-user" class="form-control" onkeypress="user.enter(event)"  placeholder="User Name"  autofocus/>
+                            </td>
+                            <td>
+                                <input value="1234" type="password" id="login-password" class="form-control" onkeypress="user.enter(event)" placeholder="Password" />
+                            </td>
+                            <td>
+                                <input  value="Tel_077" type="text" id="login-station" class="form-control" placeholder="station" onkeypress="user.enter(event)"/>
+                            </td>
+                            
+                            <td>
+                               <button title="Versión 8.0.0" id="version1" class="btn btn-primary " type="submit" id="login-submit" onclick="user.initialLogin()">Sign in</button>
+                            </td>
+                        </tr>
+                    </table>
+                </nav>
+            </div>
+
+            <!-- SECCION PARA SELECCIONAR CAMPAÑA -->
+            <div data-page="campania">
+                <nav class="bg-dark">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td>
+                                <select id="main-page-available-campaigns" class="custom-select">
+                                    <option value="0">Seleccione una campaña</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary" id="login-submit" onclick="user.obtenerCamSelect()">Seleccionar</button>
+                            </td>
+                            <td rowspan="2" valign="middle" align="right" >
+                               <bottom title="Versión 8.0.0" id="version2" class="btn btn-danger" onclick="user.icLogout()"><strong>Log Out</strong></bottom>
+                            </td>
+                        </tr>
+                    </table>
+                </nav>
+                <div id="cam-disponibles" style="display: none"></div>
+            </div>
+            
+            <!-- SECCION PARA LAS FUNCIONES DE TAKE CALL Y HANG UP -->
+            <div data-page="main-page">
+                <nav class=" bg-dark">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td style="width: 250px;" align="left">
+                                <button class="btn btn-success" id="placePreviewCall" onclick="user.changeStatus('Available');"> Take Call</button>
+                                &nbsp; <label style="color: #FFF;">|</label> &nbsp;
+                                <button class="btn btn-success" id="disposition-buttons" onclick="user.sendDisposition()" disabled>Hang Up</button>
+                                <!--button class="btn btn-info" id="main-page-break-button" onclick="user.requestBreak()">HangUp</button-->
+                            </td>
+                            <td valign="middle" style="font-size: 10pt;">
+                                <label style="color: #FFF;">
+                                    <strong>Status:</strong> &nbsp;
+                                    <span id="statusDropdownMenuLink"></span>
+                                    <span id="telV" style="display: none;">
+                                        <strong>Teléfono:</strong> &nbsp;
+                                    </span>
+                                    <span id="tel"></span>
+                                </label>
+                            </td>
+                            <td style="width: 20px" valign="middle" align="right" >
+                               <bottom title="Versión 8.0.0" id="version4" class="btn btn-danger" onclick="user.icLogout()"><strong>Log Out</strong></bottom>
+                            </td>
+                        </tr>
+                    </table>
+                </nav>
+                
+                <!-- ********************* INFORMACIÓN DEL ESTADO DEL AGENTE E INFORMACION DE LA LLAMADA  ******************************* -->
+                <div class="container-fluid h-100 justify-content-center m-0 p-0" >
+                    <center>
+                        <div class="row h-100 justify-content-center m-0 p-0">
+                            <center>                
+                                <div class="mb-5 justify-content-center m-0 p-0">
+                                        <div id="dataPop" style="display: none">
+                                            <a href="#" data-toggle="collapse" data-target="#dataPopInfo">Data Pop Info</a>
+                                            <div id="dataPopInfo" class="collapse show"></div>
+                                            <a href="#" data-toggle="collapse" data-target="#dataPopAttributes">Attributes</a>
+                                            <div id="dataPopAttributes" class="collapse"></div>
+                                            <label id="bandera">0</label>
+                                        </div>
+                                </div>
+                            </center>
+                        </div>
+                    </center>
+                </div>
+            </div>
+
+            <!-- SECCION DE MODAL AL CARGAR UNA NUEVA VISTA -->
+            <div class="modal fade" id="loading-modal" tabindex="-1" role="dialog" style="display: none;">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <p class="text-center align-middle m-0">Please Wait...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECCION DE MODAL DE MENSAJE DE ERROR O ATENCION PARA EL AGENTE -->
+            <div class="modal fade" id="error-modal" tabindex="-1" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Attention!</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p class="text-center align-middle m-0" id="error-modal-message"></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" data-dismiss="modal" class="btn btn-primary">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+             <div style="background: #CEE3F6; width: 100%; height: 100%; display: none;" id="atributo"></div>
+       </div>
+
+        <!-- Load jquery and popper as both are dependiencies of bootstrap -->
+        <script src="css/bootstrap/jquery-3.3.1.min.js"></script>
+        <script src="css/bootstrap/popper.min.js"></script>
+        <script src="css/bootstrap/bootstrap.js"></script>
+        <script src="js/config.js"></script>
+        <script src="js/events.js"></script>
+        <script src="js/display.js"></script>
+        <script src="js/user.js"></script>
+        <script src="js/session.js"></script>
+        <script src="js/subscriptions.js"></script>
+        
+        <script src="js/main.js"></script>
+
+        <!-- DISPLAY DE LA PAGINA DE INICIO -->
+        <script>display.page('login-page');</script>
+
+    </body>
+
+</html>
