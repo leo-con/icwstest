@@ -22,11 +22,11 @@ function Config()
     var _ICWS_URI_PATH = '/icws';
     var _ICWS_MEDIA_TYPE = 'application/vnd.inin.icws+JSON';
     var _ICWS_MEDIA_CHARSET = 'charset=utf-8';
-    var _alternateHostList = ['132.130.150.212'];
-    //var _alternateHostList = ['IC1'];
+    //var _alternateHostList = ['132.130.150.212'];
+    var _alternateHostList = ['IC1'];
     /**************SERVIDOR PRINCIPAL***************/
-    var _ICWS_URI_SERVER = '132.130.150.210'+ ICWS_URI_PORT;
-    //var _ICWS_URI_SERVER = '172.16.11.188'+ ICWS_URI_PORT;
+    //var _ICWS_URI_SERVER = '132.130.150.210'+ ICWS_URI_PORT;
+    var _ICWS_URI_SERVER = '172.16.11.188'+ ICWS_URI_PORT;
     session.server = _ICWS_URI_SERVER;
     /***************ESTACIÓN DE TRABAJO ****************************/
 
